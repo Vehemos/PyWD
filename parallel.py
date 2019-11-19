@@ -6,20 +6,29 @@ Created on Tue Nov 1 07:03:36 2019
 """
 
 import cv2
-import logging
 import boto3
+import math
 import numpy as np
-from numpy import genfromtxt
-from botocore.exceptions import ClientError
 
-#def split():
+#Function to divide image into chunks
+def split(image, chunks):
+    #Get info abou image (height, width)
+    height, width = image.shape[:2]
+    #Calculate where the image will be divided (stride)
+    stride = (1/chunks)
     
-
-
-
-
-
-
+    x, y = int(0), int(0)                                                       #starting coords for image (up)
+    w, z = int(height * stride), int(width)                                     #ending coords where the image will be split (down)
+    #Chunking loop
+    for i in range (0, chunks):
+        start_row, start_col = x, y
+        end_row, end_col = w, z
+        temp_img = image[start_row:end_row , start_col:end_col]
+        cv2.imwrite(str(i+1) + ".png",temp_img)                                 #Save Image as iteration number.png
+        #Update Var for next iteration
+        x = w
+        w += w
+        
 key_file = np.loadtxt("C:\\rootkey.csv", dtype=str, delimiter='=')
 
 # Create SQS client
@@ -36,21 +45,10 @@ img_src = "C:\\tble.png"
 chunks = num_workers #division by image
 
 image = cv2.imread(img_src)
-#cv2.imshow("Original Image", image)
 
-image = cv2.imread(img_src)
+files = split(image, chunks)
 
-height, width = image.shape[:2]
-start_row, start_col = int(0), int(0)
-end_row, end_col = int(height * .5), int(width)
-cropped_top = image[start_row:end_row , start_col:end_col]
-cv2.imwrite("top.png",cropped_top)
-
-start_row, start_col = int(height * .5), int(0)
-end_row, end_col = int(height), int(width)
-cropped_bot = image[start_row:end_row , start_col:end_col]
-cv2.imwrite("bot.png",cropped_bot)
-
+'''
 #for i in range (0,chunks):
 s3.upload_file("top.png", bucket, "1")
 
@@ -90,7 +88,5 @@ response = sqs.send_message(
         'Files Uploaded.'
     )
 )
-    
 
-
-print(response['MessageId'])
+print(response['MessageId'])'''
