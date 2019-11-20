@@ -54,9 +54,9 @@ for i in range (0,chunks):
     response = sqs.send_message(
                 QueueUrl=queue_url,
                 MessageAttributes={
-                        'URL':{
+                        'img':{
                                 'DataType': 'String',
-                                'StringValue': "https://" + bucket +  ".s3.ap-south-1.amazonaws.com/" + str(i+1) + ".png",
+                                'StringValue': str(i+1) + ".png",
                                 },
             },
             MessageBody=(

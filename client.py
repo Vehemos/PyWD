@@ -1,4 +1,5 @@
 import cv2
+import sys
 import boto3
 import numpy as np
 
@@ -25,16 +26,46 @@ response = sqs.receive_message(
     WaitTimeSeconds=0
 )
 
-message = response['Messages'][0]
+try:
+    message = response['Messages'][0]
+except KeyError:
+    print("Unable to find files, please check connection or retry.")
+    sys.exit()
+
 receipt_handle = message['ReceiptHandle']
 msg_body = message['Body']
 
 if(msg_body == "Files Uploaded."):
-    print(message)
-    # Delete received message from queue
+    response = sqs.receive_message(
+        QueueUrl=queue_url,
+        MaxNumberOfMessages=1,
+        MessageAttributeNames=[
+            'All'
+        ],
+        VisibilityTimeout=3,
+        WaitTimeSeconds=0
+    )
+
+    try:
+        message = response['Messages'][0]
+    except KeyError:
+        print("Unable to find files, maybe queue is empty or retry.")
+        print(response)
+        sys.exit()
+        
+    receipt_handle = message['ReceiptHandle']
+    
+    try:
+        img_name = message['MessageAttributes']['img']['StringValue']
+    except KeyError:
+        print("Unable to find files, please check connection or retry.")
+    
+    s3.download_file(bucket, img_name, img_name)
+    
     sqs.delete_message(
-        QueueUrl=msg_url,
+        QueueUrl=queue_url,
         ReceiptHandle=receipt_handle
     )
+        
 else:
-    print("Waiting for msg")
+    print("Unable to find files, please check connectino or retry.")
