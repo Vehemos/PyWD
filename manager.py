@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Nov 1 07:03:36 2019
-
-@author: Sarthak Tripathi
-"""
-
 import cv2
 import boto3
 import numpy as np
@@ -43,7 +36,7 @@ bucket = 'imageblockupload'
 # Initialize program variables
 num_workers = input("Enter number of workers: ")
 img_src = "tble.png"
-chunks = num_workers # Splits of each image. REDO late to find smarter splits
+chunks = int(num_workers) # Splits of each image. REDO late to find smarter splits
 
 # Read Image
 image = cv2.imread(img_src)
