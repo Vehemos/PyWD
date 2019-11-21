@@ -35,7 +35,7 @@ bucket = 'imageblockupload'
 
 # Initialize program variables
 num_workers = input("Enter number of workers: ")
-img_src = "tble.png"
+img_src = "download.png"
 chunks = int(num_workers) # Splits of each image. REDO late to find smarter splits
 
 # Read Image
@@ -61,15 +61,15 @@ for i in range (0,chunks):
             },
             MessageBody=(
                     'Image Urls.'),
-            MessageGroupId='ImageBlocks',
-            MessageDeduplicationId=str(i+1)
+            MessageGroupId='ImageBlock' + str(i+1),
+            MessageDeduplicationId=str(i+1),
             )
-
+    print(response)
 
 # Send message to SQS queue that task is finished.
 response = sqs.send_message(
     QueueUrl=msg_url,
-    DelaySeconds=10,
+    DelaySeconds=0,
     MessageAttributes={
         'Images': {
             'DataType': 'String',
