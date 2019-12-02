@@ -1,9 +1,7 @@
 import cv2
-import sys
 import boto3
 import socket
 import numpy as np
-import progressbar
 from PIL import Image
 from time import sleep
 import matplotlib.pyplot as plt

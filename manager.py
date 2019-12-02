@@ -5,7 +5,6 @@ import numpy as np
 import random as rnd
 from time import sleep
 
-
 # Load Credentials    
 key_file = np.loadtxt("rootkey.csv", dtype=str, delimiter='=')
 
@@ -28,7 +27,7 @@ def split(image, chunks):
     height, width = image.shape[:2]
     # Calculate where the image will be divided (stride)
     stride = (1/chunks)
-    
+
     x, y = int(0), int(0)                                                       # Starting coords for image (up)
     w, z = int(height), int(width * stride)                                     # Ending coords where the image will be split (down)
     #  Chunking loop
